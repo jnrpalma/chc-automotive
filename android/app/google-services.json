@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1099496854876",
+    "project_id": "chc-aesthetics",
+    "storage_bucket": "chc-aesthetics.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1099496854876:android:2dc9bf22c42abb1e5c1d99",
+        "android_client_info": {
+          "package_name": "com.example.chc_aesthetics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf8znk8fKNR-om3cyMD4sjKfYtb4qdcCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
