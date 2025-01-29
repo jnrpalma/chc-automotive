@@ -20,113 +20,136 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:
+          false, // Impede que o layout se mova com o teclado
       backgroundColor: const Color(0xFF30343F), // Fundo Gunmetal
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
             children: [
-              // Ícone e Nome do App
-              const Icon(Icons.lock_outline,
-                  size: 100, color: Color(0xFFE4D9FF)), // Periwinkle
-              const SizedBox(height: 10),
-              const Text(
-                "Que bom ter você aqui!",
-                style: TextStyle(
-                  color: Color(0xFFFAFAFF), // Ghost White
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              // **Cabeçalho fixo**
+              Container(
+                padding: const EdgeInsets.only(top: 60, bottom: 30),
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.lock_outline,
+                      size: 100,
+                      color: Color(0xFFE4D9FF), // Periwinkle
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Que bom ter você aqui!",
+                      style: TextStyle(
+                        color: Color(0xFFFAFAFF), // Ghost White
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Confirme seus dados para continuar",
+                      style: TextStyle(
+                        color: Color(0xFFE4D9FF), // Periwinkle
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                "Confirme seus dados para continuar",
-                style: TextStyle(
-                  color: Color(0xFFE4D9FF), // Periwinkle
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 30),
 
-              // Campos de entrada
-              _buildTextField(_emailController, "Email", Icons.email),
-              const SizedBox(height: 15),
-              _buildTextField(_passwordController, "Senha", Icons.lock,
-                  obscureText: true),
-              const SizedBox(height: 20),
+              // **Área Rolável dos Campos**
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      _buildTextField(_emailController, "Email", Icons.email),
+                      const SizedBox(height: 15),
+                      _buildTextField(_passwordController, "Senha", Icons.lock,
+                          obscureText: true),
+                      const SizedBox(height: 20),
 
-              // Botão de Login
-              ElevatedButton(
-                onPressed: _isLoading ? null : _loginUser,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF273469), // Delft Blue
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Color(0xFFFAFAFF))
-                    : const Text(
-                        "Login",
-                        style: TextStyle(
-                          color: Color(0xFFFAFAFF), // Ghost White
-                          fontWeight: FontWeight.bold,
+                      // **Botão de Login**
+                      ElevatedButton(
+                        onPressed: _isLoading ? null : _loginUser,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xFF273469), // Delft Blue
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 100, vertical: 15),
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Color(0xFFFAFAFF))
+                            : const Text(
+                                "Login",
+                                style: TextStyle(
+                                  color: Color(0xFFFAFAFF), // Ghost White
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // **Esqueci minha senha**
+                      TextButton(
+                        onPressed: _resetPassword,
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              const Color(0xFFE4D9FF), // Periwinkle
+                        ),
+                        child: const Text(
+                          "Esqueci minha senha",
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
-              ),
-              const SizedBox(height: 20),
+                      const SizedBox(height: 40),
 
-              // Esqueci minha senha
-              TextButton(
-                onPressed: _resetPassword,
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFFE4D9FF), // Periwinkle
-                ),
-                child: const Text(
-                  "Esqueci minha senha",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
+                      // **Link para cadastro**
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Ainda não tem conta?",
+                              style: TextStyle(color: Color(0xFFFAFAFF))),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const RegisterPage()),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor:
+                                  const Color(0xFFE4D9FF), // Periwinkle
+                            ),
+                            child: const Text(
+                              "Cadastre-se!",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 40),
-
-              // Link para cadastro
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Ainda não tem conta?",
-                      style: TextStyle(color: Color(0xFFFAFAFF))),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage()),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFFE4D9FF), // Periwinkle
-                    ),
-                    child: const Text(
-                      "Cadastre-se!",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
               ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-  // Função para autenticar usuário com Firebase
+  // **Função para autenticar usuário com Firebase**
   void _loginUser() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -154,11 +177,11 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       setState(() {
         _isLoading = false;
-      });
+      }); // Corrigido o fechamento correto
     }
   }
 
-  // Função para redefinir senha
+  // **Função para redefinir senha**
   void _resetPassword() async {
     final email = _emailController.text.trim();
 
@@ -175,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Função para exibir mensagens na tela
+  // **Função para exibir mensagens na tela**
   void _showMessage(String message, {bool success = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -185,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Método para criar os campos de entrada
+  // **Método para criar os campos de entrada**
   Widget _buildTextField(
       TextEditingController controller, String label, IconData icon,
       {bool obscureText = false,

@@ -23,96 +23,117 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false, // Impede o layout de mudar com o teclado
       backgroundColor: const Color(0xFF30343F), // Fundo Gunmetal
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
             children: [
-              // Ícone e Nome do App
-              const Icon(Icons.car_repair,
-                  size: 100, color: Color(0xFFE4D9FF)), // Periwinkle
-              const SizedBox(height: 10),
-              const Text(
-                "CHC Estética Automotiva",
-                style: TextStyle(
-                  color: Color(0xFFFAFAFF), // Ghost White
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // Campos de entrada
-              _buildTextField(_nameController, "Nome completo", Icons.person),
-              const SizedBox(height: 15),
-              _buildTextField(_emailController, "Email", Icons.email,
-                  keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 15),
-              _buildTextField(_phoneController, "Telefone", Icons.phone,
-                  keyboardType: TextInputType.phone),
-              const SizedBox(height: 15),
-              _buildTextField(_passwordController, "Senha", Icons.lock,
-                  obscureText: true),
-              const SizedBox(height: 15),
-              _buildTextField(_confirmPasswordController, "Confirme sua senha",
-                  Icons.lock_outline,
-                  obscureText: true),
-              const SizedBox(height: 30),
-
-              // Botão de Cadastro
-              ElevatedButton(
-                onPressed: _isLoading ? null : _registerUser,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF273469), // Delft Blue
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Color(0xFFFAFAFF))
-                    : const Text(
-                        "Cadastrar",
-                        style: TextStyle(
-                          color: Color(0xFFFAFAFF), // Ghost White
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-              const SizedBox(height: 20),
-
-              // Botão para voltar ao login
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Já tem uma conta?",
-                      style: TextStyle(color: Color(0xFFFAFAFF))),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFFE4D9FF), // Periwinkle
+              // **Cabeçalho fixo**
+              Container(
+                padding: const EdgeInsets.only(top: 60, bottom: 30),
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.car_repair,
+                      size: 100,
+                      color: Color(0xFFE4D9FF), // Periwinkle
                     ),
-                    child: const Text(
-                      "Faça login",
+                    const SizedBox(height: 10),
+                    const Text(
+                      "CHC Estética Automotiva",
                       style: TextStyle(
+                        color: Color(0xFFFAFAFF), // Ghost White
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ],
+                ),
+              ),
+
+              // **Área Rolável dos Campos**
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      _buildTextField(
+                          _nameController, "Nome completo", Icons.person),
+                      const SizedBox(height: 15),
+                      _buildTextField(_emailController, "Email", Icons.email,
+                          keyboardType: TextInputType.emailAddress),
+                      const SizedBox(height: 15),
+                      _buildTextField(_phoneController, "Telefone", Icons.phone,
+                          keyboardType: TextInputType.phone),
+                      const SizedBox(height: 15),
+                      _buildTextField(_passwordController, "Senha", Icons.lock,
+                          obscureText: true),
+                      const SizedBox(height: 15),
+                      _buildTextField(_confirmPasswordController,
+                          "Confirme sua senha", Icons.lock_outline,
+                          obscureText: true),
+                      const SizedBox(height: 30),
+
+                      // **Botão de Cadastro**
+                      ElevatedButton(
+                        onPressed: _isLoading ? null : _registerUser,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xFF273469), // Delft Blue
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 100, vertical: 15),
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Color(0xFFFAFAFF))
+                            : const Text(
+                                "Cadastrar",
+                                style: TextStyle(
+                                  color: Color(0xFFFAFAFF), // Ghost White
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // **Botão para voltar ao login**
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Já tem uma conta?",
+                              style: TextStyle(color: Color(0xFFFAFAFF))),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              foregroundColor:
+                                  const Color(0xFFE4D9FF), // Periwinkle
+                            ),
+                            child: const Text(
+                              "Faça login",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-  // Método para lidar com o cadastro do usuário
+  // **Método para lidar com o cadastro do usuário**
   void _registerUser() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -157,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  // Método para exibir mensagens
+  // **Método para exibir mensagens**
   void _showMessage(String message, {bool success = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -167,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Método para criar os campos de entrada
+  // **Método para criar os campos de entrada**
   Widget _buildTextField(
       TextEditingController controller, String label, IconData icon,
       {bool obscureText = false,
