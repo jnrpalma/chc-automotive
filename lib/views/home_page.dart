@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chc_aesthetics/components/service_card.dart';
+import 'package:chc_aesthetics/utils/app_colors.dart';
+import 'package:chc_aesthetics/views/login_page.dart'; // Importando LoginPage para o Logout
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   File? _backgroundImage;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -23,29 +28,90 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _logout() async {
+    await _auth.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final User? user = _auth.currentUser;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF30343F), // Fundo Gunmetal
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E2749), // Space Cadet
+        backgroundColor: AppColors.primary,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Color(0xFFFAFAFF)), // Ghost White
-          onPressed: () {},
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, color: AppColors.textLight),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            );
+          },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Color(0xFFFAFAFF)),
+            icon: const Icon(Icons.shopping_cart, color: AppColors.textLight),
             onPressed: () {},
           ),
         ],
       ),
+      drawer: Drawer(
+        backgroundColor: AppColors.primary,
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: AppColors.primary),
+              accountName: Text(
+                user?.displayName ?? "Usuário",
+                style: const TextStyle(color: AppColors.textLight),
+              ),
+              accountEmail: Text(
+                user?.email ?? "email@example.com",
+                style: const TextStyle(color: AppColors.accent),
+              ),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: AppColors.accent,
+                backgroundImage: user?.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : const NetworkImage('https://i.pravatar.cc/300'),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: AppColors.textLight),
+              title: const Text("Meu Perfil",
+                  style: TextStyle(color: AppColors.textLight)),
+              onTap: () {
+                // Navegar para a tela de perfil (implementar depois)
+              },
+            ),
+            ListTile(
+              leading:
+                  const Icon(Icons.calendar_today, color: AppColors.textLight),
+              title: const Text("Meus Agendamentos",
+                  style: TextStyle(color: AppColors.textLight)),
+              onTap: () {
+                // Navegar para a tela de agendamentos (implementar depois)
+              },
+            ),
+            const Divider(color: AppColors.accent),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.redAccent),
+              title: const Text("Logout",
+                  style: TextStyle(color: Colors.redAccent)),
+              onTap: _logout,
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
-          // **Cabeçalho clicável para alterar o fundo**
           GestureDetector(
-            onTap: _pickImage, // Abre a galeria ao clicar
+            onTap: _pickImage,
             child: Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
@@ -53,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   height: 180,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1E2749), // Cor padrão Space Cadet
+                    color: AppColors.primary,
                     borderRadius: const BorderRadius.vertical(
                       bottom: Radius.circular(30),
                     ),
@@ -62,52 +128,47 @@ class _HomePageState extends State<HomePage> {
                             image: FileImage(_backgroundImage!),
                             fit: BoxFit.cover,
                           )
-                        : null, // Mantém o fundo azul se nenhuma imagem for escolhida
+                        : null,
                   ),
                   child: _backgroundImage == null
                       ? const Center(
                           child: Text(
                             "Clique para alterar o fundo",
                             style: TextStyle(
-                              color: Color(0xFFE4D9FF), // Periwinkle
+                              color: AppColors.accent,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         )
-                      : null, // Esconde o texto quando há uma imagem
+                      : null,
                 ),
                 Positioned(
                   top: 110,
                   child: CircleAvatar(
-                    radius: 75, // Aumentado o tamanho do avatar
-                    backgroundColor: const Color(0xFFFAFAFF), // Ghost White
-                    child: const CircleAvatar(
+                    radius: 75,
+                    backgroundColor: AppColors.textLight,
+                    child: CircleAvatar(
                       radius: 70,
-                      backgroundImage: NetworkImage(
-                          'https://i.pravatar.cc/300'), // Avatar temporário
+                      backgroundImage: user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
+                          : const NetworkImage('https://i.pravatar.cc/300'),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-
-          const SizedBox(height: 80),
-
-          // **Título "Últimos serviços"**
+          const SizedBox(height: 100),
           const Text(
             "Últimos serviços",
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFE4D9FF), // Periwinkle
+              color: AppColors.accent,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // **Lista de Serviços**
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
@@ -128,76 +189,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// **Widget para os cartões de serviços**
-class ServiceCard extends StatelessWidget {
-  final String service;
-  final String car;
-  final String price;
-  final String date;
-
-  const ServiceCard({
-    super.key,
-    required this.service,
-    required this.car,
-    required this.price,
-    required this.date,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF273469), // Delft Blue (Fundo do card)
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 3,
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  service,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFFAFAFF), // Ghost White
-                  ),
-                ),
-                Text(
-                  car,
-                  style:
-                      const TextStyle(color: Color(0xFFE4D9FF)), // Periwinkle
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  price,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFFAFAFF), // Ghost White
-                  ),
-                ),
-                Text(
-                  date,
-                  style:
-                      const TextStyle(color: Color(0xFFE4D9FF)), // Periwinkle
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

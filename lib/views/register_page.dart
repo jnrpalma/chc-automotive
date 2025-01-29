@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chc_aesthetics/services/auth_service.dart';
+import 'package:chc_aesthetics/utils/app_colors.dart'; // Importando cores centralizadas
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false, // Impede o layout de mudar com o teclado
-      backgroundColor: const Color(0xFF30343F), // Fundo Gunmetal
+      backgroundColor: AppColors.background, // Fundo centralizado
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
@@ -38,13 +39,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     const Icon(
                       Icons.car_repair,
                       size: 100,
-                      color: Color(0xFFE4D9FF), // Periwinkle
+                      color: AppColors.accent, // Periwinkle
                     ),
                     const SizedBox(height: 10),
                     const Text(
                       "CHC Estética Automotiva",
                       style: TextStyle(
-                        color: Color(0xFFFAFAFF), // Ghost White
+                        color: AppColors.textLight, // Ghost White
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -80,8 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ElevatedButton(
                         onPressed: _isLoading ? null : _registerUser,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFF273469), // Delft Blue
+                          backgroundColor: AppColors.secondary, // Delft Blue
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -90,11 +90,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         child: _isLoading
                             ? const CircularProgressIndicator(
-                                color: Color(0xFFFAFAFF))
+                                color: AppColors.textLight)
                             : const Text(
                                 "Cadastrar",
                                 style: TextStyle(
-                                  color: Color(0xFFFAFAFF), // Ghost White
+                                  color: AppColors.textLight, // Ghost White
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -106,12 +106,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text("Já tem uma conta?",
-                              style: TextStyle(color: Color(0xFFFAFAFF))),
+                              style: TextStyle(color: AppColors.textLight)),
                           TextButton(
                             onPressed: () => Navigator.pop(context),
                             style: TextButton.styleFrom(
-                              foregroundColor:
-                                  const Color(0xFFE4D9FF), // Periwinkle
+                              foregroundColor: AppColors.accent, // Periwinkle
                             ),
                             child: const Text(
                               "Faça login",
@@ -197,17 +196,17 @@ class _RegisterPageState extends State<RegisterPage> {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      style: const TextStyle(color: Color(0xFFFAFAFF)), // Ghost White
+      style: const TextStyle(color: AppColors.textLight), // Ghost White
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFFE4D9FF)), // Periwinkle
+        labelStyle: const TextStyle(color: AppColors.accent), // Periwinkle
         filled: true,
-        fillColor: const Color(0xFF1E2749), // Space Cadet (fundo do campo)
+        fillColor: AppColors.primary, // Space Cadet (fundo do campo)
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
-        prefixIcon: Icon(icon, color: const Color(0xFFE4D9FF)), // Periwinkle
+        prefixIcon: Icon(icon, color: AppColors.accent), // Periwinkle
       ),
     );
   }
