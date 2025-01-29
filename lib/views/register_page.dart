@@ -16,7 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  final AuthService _authService = AuthService(); // Instância do serviço
+  final AuthService _authService = AuthService();
 
   bool _isLoading = false; // Indicador de carregamento
 
@@ -24,125 +24,89 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.purpleAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
-              child: Column(
-                children: const [
-                  Icon(Icons.person_add_alt_1, size: 100, color: Colors.white),
-                  SizedBox(height: 20),
-                  Text(
-                    "Crie sua conta",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold),
+      backgroundColor: const Color(0xFF30343F), // Fundo Gunmetal
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Ícone e Nome do App
+              const Icon(Icons.car_repair,
+                  size: 100, color: Color(0xFFE4D9FF)), // Periwinkle
+              const SizedBox(height: 10),
+              const Text(
+                "CHC Estética Automotiva",
+                style: TextStyle(
+                  color: Color(0xFFFAFAFF), // Ghost White
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 30),
+
+              // Campos de entrada
+              _buildTextField(_nameController, "Nome completo", Icons.person),
+              const SizedBox(height: 15),
+              _buildTextField(_emailController, "Email", Icons.email,
+                  keyboardType: TextInputType.emailAddress),
+              const SizedBox(height: 15),
+              _buildTextField(_phoneController, "Telefone", Icons.phone,
+                  keyboardType: TextInputType.phone),
+              const SizedBox(height: 15),
+              _buildTextField(_passwordController, "Senha", Icons.lock,
+                  obscureText: true),
+              const SizedBox(height: 15),
+              _buildTextField(_confirmPasswordController, "Confirme sua senha",
+                  Icons.lock_outline,
+                  obscureText: true),
+              const SizedBox(height: 30),
+
+              // Botão de Cadastro
+              ElevatedButton(
+                onPressed: _isLoading ? null : _registerUser,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF273469), // Delft Blue
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Preencha os campos abaixo para começar",
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                    textAlign: TextAlign.center,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Color(0xFFFAFAFF))
+                    : const Text(
+                        "Cadastrar",
+                        style: TextStyle(
+                          color: Color(0xFFFAFAFF), // Ghost White
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+              const SizedBox(height: 20),
+
+              // Botão para voltar ao login
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Já tem uma conta?",
+                      style: TextStyle(color: Color(0xFFFAFAFF))),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFFE4D9FF), // Periwinkle
+                    ),
+                    child: const Text(
+                      "Faça login",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _nameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration:
-                          _inputDecoration("Nome completo", Icons.person),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDecoration("Email", Icons.email),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDecoration("Telefone", Icons.phone),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDecoration("Senha", Icons.lock),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDecoration(
-                          "Confirme sua senha", Icons.lock_outline),
-                    ),
-                    const SizedBox(height: 30),
-
-                    // Botão de Cadastro
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _registerUser,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 100, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.deepPurple)
-                          : const Text(
-                              "Cadastrar",
-                              style: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Botão para voltar ao login
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Já tem uma conta?",
-                            style: TextStyle(color: Colors.white)),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            "Faça login",
-                            style: TextStyle(
-                                color: Colors.orangeAccent,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -203,18 +167,27 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Método para estilizar os campos de entrada
-  InputDecoration _inputDecoration(String label, IconData icon) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: const TextStyle(color: Colors.white),
-      filled: true,
-      fillColor: Colors.white.withOpacity(0.2),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide.none,
+  // Método para criar os campos de entrada
+  Widget _buildTextField(
+      TextEditingController controller, String label, IconData icon,
+      {bool obscureText = false,
+      TextInputType keyboardType = TextInputType.text}) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: Color(0xFFFAFAFF)), // Ghost White
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Color(0xFFE4D9FF)), // Periwinkle
+        filled: true,
+        fillColor: const Color(0xFF1E2749), // Space Cadet (fundo do campo)
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        prefixIcon: Icon(icon, color: const Color(0xFFE4D9FF)), // Periwinkle
       ),
-      prefixIcon: Icon(icon, color: Colors.white),
     );
   }
 }
